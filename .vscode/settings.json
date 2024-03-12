@@ -1,0 +1,6 @@
+{
+  "prettier.quoteProps": "preserve",
+  "javascript.preferences.quoteStyle": "auto",
+  "prettier.embeddedLanguageFormatting": "auto",
+  "prettier.jsxSingleQuote": false
+}
