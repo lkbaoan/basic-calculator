@@ -14,13 +14,18 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+.display {
+  display: flex;
+  flex-direction: column;
+}
+.expression {
+  height: 1rem;
+  margin-bottom: 2rem;
+  color: #aaaaaa;
+}
 .result {
   height: 4rem;
   margin-bottom: 1rem;
-  /* background-color: #4bd086;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start; */
 }
 
 .wrapper {
@@ -55,17 +60,27 @@ body {
 .button:hover {
   border: 2px solid #242424;
 }
+.button:focus {
+  background: #dd3722;
+  border: 2px solid #242424;
+}
 
 .equals {
   background-color: #4bd086;
-  grid-column: 3/5;
+  grid-column: 4;
+  grid-row: 4 / span 2;
+  height: auto;
+}
+.zero {
+  grid-column: 1 / span 2;
 }
 
+.plus {
+  background: #22c8dd;
+  grid-column: 4;
+  grid-row: 2 / span 2;
+  height: auto;
+}
 .opt {
-  background: #22C8DD;
-}
-
-.opt:focus {
-  background: #DD3722;
-  border: 2px solid #242424;
+  background: #22c8dd;
 }

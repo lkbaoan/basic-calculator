@@ -12,13 +12,21 @@ const buttonValue = [
   [0, ".", "="],
 ];
 
+const numPad = [
+  ["C", "/", "x", "-"],
+  [7, 8, 9, "+"],
+  [4, 5, 6],
+  [1, 2, 3, "="],
+  [0, "."],
+];
+
 function App() {
   return (
     <CalcProvider>
       <Wrapper>
         <DisplayResult />
         <ButtonBox>
-          {buttonValue.flat().map((button, i) => (
+          {numPad.flat().map((button, i) => (
             <Button value={button} key={i} />
           ))}
         </ButtonBox>

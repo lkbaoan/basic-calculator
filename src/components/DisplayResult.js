@@ -5,10 +5,13 @@ const Screen = () => {
   const { calc } = useContext(CalcContext);
 
   return (
-    <Textfit className="result" max={50} mode="single">
-      <div className="calculation">{calc.num ? calc.num : calc.res}</div>
-      {/* <div className="operator">{calc.num ? calc.num : calc.res}</div> */}
-    </Textfit>
+    <dir className="display">
+      <div className="expression">{calc.expression}</div>
+      <Textfit className="result" max={50} mode="single">
+        <div className="calculation">{calc.num ? calc.num : calc.res}</div>
+        {/* <div className="operator">{calc.num ? calc.num : calc.res}</div> */}
+      </Textfit>
+    </dir>
   );
 };
 

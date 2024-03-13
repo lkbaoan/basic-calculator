@@ -1,32 +1,38 @@
 import { useContext } from "react";
 import { CalcContext } from "../context/CalcContext";
 
-const getStyleName = (btn) => {
+const getStyleName = (button) => {
   const className = {
     "=": "equals",
     "x": "opt",
     "-": "opt",
-    "+": "opt",
+    "+": "plus",
     "/": "opt",
+    "0": "zero",
   };
-  return className[btn];
+  return className[button];
 };
 
 const Button = ({ value }) => {
   const { calc, setCalc } = useContext(CalcContext);
 
-  // User click comma
   const commaClick = () => {
+    let newNum = !calc.num.toString().includes(".")
+      ? calc.num + value
+      : calc.num;
+    let newExp = calc.expression.replace(/\+|\/|\*|\-.*$/, "")
+
     setCalc({
       ...calc,
-      num: !calc.num.toString().includes(".") ? calc.num + value : calc.num,
+      expression: calc.sign ? calc.expression + newNum : newNum,
+      num: newNum,
     });
   };
-  // User click C
+
   const resetClick = () => {
-    setCalc({ sign: "", num: 0, res: 0 });
+    setCalc({ expression: "", sign: "", num: 0, res: 0 });
   };
-  // User click number
+
   const handleClickButton = () => {
     const numberString = value.toString();
 
@@ -37,59 +43,71 @@ const Button = ({ value }) => {
       numberValue = Number(calc.num + numberString);
     }
 
+    let newExp = calc.expression + numberString;
     setCalc({
       ...calc,
+      expression: newExp,
       num: numberValue,
     });
   };
-  // User click operation
+
   const signClick = () => {
+    let result = !calc.res && calc.num ? calc.num : calc.res;
+    let newExp = calc.expression;
+    // console.log("String: " + calc.expression);
+    // console.log("Last char: " + calc.expression.slice(-1));
+    // console.log("Res: " + calc.res);
+    // console.log("Num: " + calc.num);
+    // console.log("Sign: " + calc.sign);
+    switch (calc.expression.slice(-1)) {
+      case "x":
+      case "/":
+      case "-":
+      case "+":
+      case ".":
+        newExp = calc.expression.substring(0, calc.expression.length - 1);
+        break;
+      default:
+        if (calc.sign) {
+          result = calculate(calc.res, calc.num, calc.sign);
+          newExp = result;
+        }
+    }
+    newExp = newExp + value;
+    // console.log(newExp);
     setCalc({
       sign: value,
-      res: !calc.res && calc.num ? calc.num : calc.res,
+      res: result,
+      expression: newExp,
       num: 0,
     });
   };
-  // User click equals
+
   const equalsClick = () => {
     if (calc.res && calc.num) {
-      const math = (a, b, sign) => {
-        const result = {
-          "+": (a, b) => a + b,
-          "-": (a, b) => a - b,
-          "x": (a, b) => a * b,
-          "/": (a, b) => a / b,
-        };
-        if (b === null || sign === null) {
-          return result[sign](a);
-        }
-        return result[sign](a, b);
-      };
+      let result = calculate(calc.res, calc.num, calc.sign);
       setCalc({
-        res: math(calc.res, calc.num, calc.sign),
+        res: result,
+        expression: result.toString(),
         sign: "",
         num: 0,
       });
     }
   };
-  // User click persen
-  const persenClick = () => {
-    setCalc({
-      num: calc.num / 100,
-      res: calc.res / 100,
-      sign: "",
-    });
-  };
-  // User click invert button
-  const invertClick = () => {
-    setCalc({
-      num: calc.num ? calc.num * -1 : 0,
-      res: calc.res ? calc.res * -1 : 0,
-      sign: "",
-    });
+  const calculate = (a, b, sign) => {
+    const result = {
+      "+": (a, b) => +a + +b,
+      "-": (a, b) => a - b,
+      "x": (a, b) => a * b,
+      "/": (a, b) => a / b,
+    };
+    if (b === null || sign === null) {
+      return result[sign](a);
+    }
+    return result[sign](a, b);
   };
 
-  const handleBtnClick = () => {
+  const handlebuttonClick = () => {
     const results = {
       ".": commaClick,
       "C": resetClick,
@@ -98,8 +116,6 @@ const Button = ({ value }) => {
       "-": signClick,
       "+": signClick,
       "=": equalsClick,
-      "%": persenClick,
-      "+-": invertClick,
     };
     if (results[value]) {
       return results[value]();
@@ -110,7 +126,7 @@ const Button = ({ value }) => {
 
   return (
     <button
-      onClick={handleBtnClick}
+      onClick={handlebuttonClick}
       className={`${getStyleName(value)} button`}
     >
       {value}
